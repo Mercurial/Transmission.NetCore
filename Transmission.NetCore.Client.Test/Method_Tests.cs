@@ -125,9 +125,11 @@ namespace Transmission.NetCore.Client.Test
 
             //Save old speed limit up
             var oldSpeedLimit = sessionInformation.SpeedLimitUp;
+            var oldSppedLimitEnabled = sessionInformation.SpeedLimitUpEnabled;
 
             //Set new speed limit
             sessionInformation.SpeedLimitUp = 200;
+            sessionInformation.SpeedLimitUpEnabled = true;
 
             //Set new session settings
             client.SessionSetAsync(sessionInformation);
@@ -136,10 +138,11 @@ namespace Transmission.NetCore.Client.Test
             var newSessionInformation = await client.SessionGetAsync();
 
             //Check new speed limit
-            Assert.AreEqual(newSessionInformation.SpeedLimitUp, 200);
+            Assert.AreEqual(200, newSessionInformation.SpeedLimitUp);
 
             //Restore speed limit
             newSessionInformation.SpeedLimitUp = oldSpeedLimit;
+            newSessionInformation.SpeedLimitUpEnabled = oldSppedLimitEnabled;
 
             //Set new session settinhs
             client.SessionSetAsync(newSessionInformation);

@@ -129,9 +129,9 @@ namespace Transmission.NetCore.Client
         /// Get fields of torrents from ids (API: torrent-get)
         /// </summary>
         /// <param name="fields">Fields of torrents</param>
-        /// <param name="ids">IDs of torrents (null or empty for get all torrents)</param>
+        /// <param name="ids">IDs of torrents (null or empty for get all torrents). int values for get by ID, string values for get by hash</param>
         /// <returns>Torrents info</returns>
-        public async Task<Torrents> TorrentGetAsync(string[] fields, params int[] ids)
+        public async Task<Torrents> TorrentGetAsync(string[] fields, params object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -154,7 +154,7 @@ namespace Transmission.NetCore.Client
         /// </summary>
         /// <param name="ids">Torrents id</param>
         /// <param name="deleteLocalData">Remove local data</param>
-        public async void TorrentRemoveAsync(int[] ids, bool deleteData = false)
+        public async void TorrentRemoveAsync(object[] ids, bool deleteData = false)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -170,7 +170,7 @@ namespace Transmission.NetCore.Client
         /// Start torrents (API: torrent-start)
         /// </summary>
         /// <param name="ids">Torrents id</param>
-        public async void TorrentStartAsync(int[] ids)
+        public async void TorrentStartAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -185,7 +185,7 @@ namespace Transmission.NetCore.Client
         /// Start now torrents (API: torrent-start-now)
         /// </summary>
         /// <param name="ids">Torrents id</param>
-        public async void TorrentStartNowAsync(int[] ids)
+        public async void TorrentStartNowAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -200,7 +200,7 @@ namespace Transmission.NetCore.Client
         /// Stop torrents (API: torrent-stop)
         /// </summary>
         /// <param name="ids">Torrents id</param>
-        public async void TorrentStopAsync(int[] ids)
+        public async void TorrentStopAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -215,7 +215,7 @@ namespace Transmission.NetCore.Client
         /// Verify torrents (API: torrent-verify)
         /// </summary>
         /// <param name="ids">Torrents id</param>
-        public async void TorrentVerifyAsync(int[] ids)
+        public async void TorrentVerifyAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -230,7 +230,7 @@ namespace Transmission.NetCore.Client
         /// Move torrents in queue on top (API: queue-move-top)
         /// </summary>
         /// <param name="ids">Torrents id</param>
-        public async void TorrentQueueMoveTopAsync(int[] ids)
+        public async void TorrentQueueMoveTopAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -245,7 +245,7 @@ namespace Transmission.NetCore.Client
         /// Move up torrents in queue (API: queue-move-up)
         /// </summary>
         /// <param name="ids"></param>
-        public async void TorrentQueueMoveUpAsync(int[] ids)
+        public async void TorrentQueueMoveUpAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -260,7 +260,7 @@ namespace Transmission.NetCore.Client
         /// Move down torrents in queue (API: queue-move-down)
         /// </summary>
         /// <param name="ids"></param>
-        public async void TorrentQueueMoveDownAsync(int[] ids)
+        public async void TorrentQueueMoveDownAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -275,7 +275,7 @@ namespace Transmission.NetCore.Client
         /// Move torrents to bottom in queue  (API: queue-move-bottom)
         /// </summary>
         /// <param name="ids"></param>
-        public async void TorrentQueueMoveBottomAsync(int[] ids)
+        public async void TorrentQueueMoveBottomAsync(object[] ids)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -292,7 +292,7 @@ namespace Transmission.NetCore.Client
         /// <param name="ids">Torrent ids</param>
         /// <param name="location">The new torrent location</param>
         /// <param name="move">Move from previous location</param>
-        public async void TorrentSetLocationAsync(int[] ids, string location, bool move)
+        public async void TorrentSetLocationAsync(object[] ids, string location, bool move)
         {
             var arguments = new Dictionary<string, object>
             {
@@ -310,11 +310,11 @@ namespace Transmission.NetCore.Client
         /// <param name="ids">The torrent whose path will be renamed</param>
         /// <param name="path">The path to the file or folder that will be renamed</param>
         /// <param name="name">The file or folder's new name</param>
-        public async Task<RenamedTorrent> TorrentRenamePathAsync(int id, string path, string name)
+        public async Task<RenamedTorrent> TorrentRenamePathAsync(object id, string path, string name)
         {
             var arguments = new Dictionary<string, object>
             {
-                { "ids", new int[] { id } },
+                { "ids", new object[] { id } },
                 { "path", path },
                 { "name", name }
             };

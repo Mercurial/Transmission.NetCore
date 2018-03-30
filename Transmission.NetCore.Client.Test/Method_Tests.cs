@@ -55,6 +55,32 @@ namespace Transmission.NetCore.Client.Test
         }
 
         [TestMethod]
+        public async Task GetTorrentInfoByID_Test()
+        {
+            var torrentsInfo = await client.TorrentGetAsync(TorrentFields.ALL_FIELDS);
+            Assert.IsTrue(torrentsInfo.TorrentList.Count() >= 1, "not enought torrents to test");
+            int id = torrentsInfo.TorrentList.FirstOrDefault().ID;
+
+            torrentsInfo = await client.TorrentGetAsync(TorrentFields.ALL_FIELDS, id);
+            var torrentInfo = torrentsInfo.TorrentList.FirstOrDefault();
+            Assert.IsNotNull(torrentInfo, "Torrent not found");
+            Assert.AreEqual(id, torrentInfo.ID);
+        }
+
+        [TestMethod]
+        public async Task GetMultipleTorrentInfo_Test()
+        {
+            var torrentsInfo = await client.TorrentGetAsync(TorrentFields.ALL_FIELDS);
+            Assert.IsTrue(torrentsInfo.TorrentList.Count() >= 2, "not enought torrents to test");
+
+            //We can get torrents by ID, hash or mixed mode
+            object[] ids = {  torrentsInfo.TorrentList[0].HashString, torrentsInfo.TorrentList[1].ID };
+
+            torrentsInfo = await client.TorrentGetAsync(TorrentFields.ALL_FIELDS, ids);
+            Assert.AreEqual(2, torrentsInfo.TorrentList.Count());
+        }
+
+        [TestMethod]
         public async Task SetTorrentSettings_Test()
         {
             var torrentsInfo = await client.TorrentGetAsync(TorrentFields.ALL_FIELDS);
@@ -98,7 +124,7 @@ namespace Transmission.NetCore.Client.Test
             var torrentInfo = torrentsInfo.TorrentList.FirstOrDefault();
             Assert.IsNotNull(torrentInfo, "Torrent not found");
 
-            client.TorrentRemoveAsync(new int[] { torrentInfo.ID });
+            client.TorrentRemoveAsync(new object[] { torrentInfo.ID });
 
             torrentsInfo = await client.TorrentGetAsync(TorrentFields.ALL_FIELDS);
 
@@ -125,9 +151,11 @@ namespace Transmission.NetCore.Client.Test
 
             //Save old speed limit up
             var oldSpeedLimit = sessionInformation.SpeedLimitUp;
+            var oldSppedLimitEnabled = sessionInformation.SpeedLimitUpEnabled;
 
             //Set new speed limit
             sessionInformation.SpeedLimitUp = 200;
+            sessionInformation.SpeedLimitUpEnabled = true;
 
             //Set new session settings
             client.SessionSetAsync(sessionInformation);
@@ -136,10 +164,11 @@ namespace Transmission.NetCore.Client.Test
             var newSessionInformation = await client.SessionGetAsync();
 
             //Check new speed limit
-            Assert.AreEqual(newSessionInformation.SpeedLimitUp, 200);
+            Assert.AreEqual(200, newSessionInformation.SpeedLimitUp);
 
             //Restore speed limit
             newSessionInformation.SpeedLimitUp = oldSpeedLimit;
+            newSessionInformation.SpeedLimitUpEnabled = oldSppedLimitEnabled;
 
             //Set new session settinhs
             client.SessionSetAsync(newSessionInformation);
